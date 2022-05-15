@@ -118,13 +118,15 @@ public class DatosJDBC implements DatosDao {
                                     getActualizar(valor, tipo)
                             )
                     ));
+            
             UpdateValuesResponse result = service.spreadsheets().values()
-                    .update(spreadsheetId, Obtener_hoja( tipo) + Obtener_rango(valor, tipo),body)
+                    .update(spreadsheetId, Obtener_hoja(tipo) + Obtener_rango(valor, tipo),body)
                     .setValueInputOption("RAW")
                     .execute();
 
             return 1;
         } catch (Exception ex) {
+            System.out.println(ex);
             return 0;
         }
     }
@@ -174,10 +176,10 @@ public class DatosJDBC implements DatosDao {
     private int Obtener_indice(Padre valor,String tipo){
         String indice =  "";
         switch (tipo) {
-            case "EMPLEADO": indice = ((Empleado) valor).getIndice();
-            case "PRODUCTO": indice =  ((Producto) valor).getIndice();
-            case "CLIENTE":  indice =  ((Cliente) valor).getIndice();
-            default: indice = "0";
+            case "EMPLEADO": indice = ((Empleado) valor).getIndice(); break;
+            case "PRODUCTO": indice =  ((Producto) valor).getIndice(); break;
+            case "CLIENTE":  indice =  ((Cliente) valor).getIndice(); break;
+            default: indice = "0"; break;
         }
                         
         return Integer.parseInt(indice);
@@ -188,7 +190,7 @@ public class DatosJDBC implements DatosDao {
 
         switch (tipo) {
             case "EMPLEADO": return ((Empleado) valor).getRegistro();
-            case "PRODUCTO": return ((Producto) valor).getRegistro();
+            case "PRODUCTO": return ((Producto) valor).getRegistro(); 
             case "CLIENTE":  return ((Cliente) valor).getRegistro();
             default: return new String[]{""};
         } 
@@ -215,8 +217,7 @@ public class DatosJDBC implements DatosDao {
     
     private String Obtener_rango(Padre valor ,String tipo){
         String indice = String.valueOf(Obtener_indice(valor, tipo));
-        
-        return "!A"+indice+Obtener_columna_antes_indice(tipo)+indice;
+        return "!A"+indice+":"+Obtener_columna_antes_indice(tipo)+indice;
     }
     
     private int Obtener_id_hoja(String tipo){

@@ -46,7 +46,9 @@ public class Cliente extends Padre {
         this.dni_ruc = dni_ruc;
         this.telefono = telefono;
         this.geolocalizacion = geolocalizacion;
+        
         this.indice = String.valueOf(indice);
+        System.out.println("indice = " + indice);
     }
 
     public String getCodigo() {
