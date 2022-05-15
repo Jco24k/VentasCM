@@ -23,13 +23,13 @@ public class Prueba {
         DatosDao empleado = new DatosJDBC();
         Padre empleado3 = new Cliente("asdasdasd",2);
         
-        Padre empleado1 = new Cliente("pan","CON MANTEQUILLA","Asdasdasd","asdasasd","asdasd");
+        Padre empleado1 = new Cliente("pan","CON ","Asdasdasd","asdasasd","asdasd");
         
         
         System.out.println(empleado.insert(empleado1,"CLIENTE"));
         
         System.out.println("DATOS INSERTADOS");
-        Padre empleado2 = new Cliente("asdasdas","CON MANTEQUILLA","Asdasdasd","asdasasd","asdasd","asdasdasd",2);
+        Padre empleado2 = new Cliente("asdasdas","CON ","Asdasdasd","asdasasd","asdasd","asdasdasd",2);
         
         System.out.println(empleado.update(empleado2,"CLIENTE"));
         System.out.println("DATOS ACTUALIZADOS");

@@ -154,77 +154,94 @@ public class DatosJDBC implements DatosDao {
     }
 
     private String Obtener_hoja(String tipo) {
-        switch (tipo) {
-            case "EMPLEADO": return Empleado.HOJA;
-            case "PRODUCTO": return Producto.HOJA;
-            case "CLIENTE":  return Cliente.HOJA;
-            default:         return "PEPITO14";
+        if (tipo=="EMPLEADO") {
+            return Empleado.HOJA;
+        } else if (tipo=="PRODUCTO") {
+            return Producto.HOJA;
+        } else if (tipo=="CLIENTE") {
+            return Cliente.HOJA;
+        } else {
+            return "PEPITO14";
         }
     }
 
     private String Obtener_columna( String tipo) {
-        switch (tipo) {
-            case "EMPLEADO": return Empleado.COLUMNA;
-            case "PRODUCTO": return Producto.COLUMNA;
-            case "CLIENTE":  return Cliente.COLUMNA;
-            default:         return "PEPITO14";
+        if (tipo=="EMPLEADO") {
+            return Empleado.COLUMNA;
+        } else if (tipo=="PRODUCTO") {
+            return Producto.COLUMNA;
+        } else if (tipo=="CLIENTE") {
+            return Cliente.COLUMNA;
+        } else {
+            return "PEPITO14";
         }
     }
 
     private int Obtener_indice(Padre valor,String tipo){
         String indice =  "";
-        switch (tipo) {
-            case "EMPLEADO": indice = ((Empleado) valor).getIndice();
-            case "PRODUCTO": indice =  ((Producto) valor).getIndice();
-            case "CLIENTE":  indice =  ((Cliente) valor).getIndice();
-            default: indice = "0";
+        if (tipo=="EMPLEADO") {
+            indice = ((Empleado) valor).getIndice();
+        } else if (tipo=="PRODUCTO") {
+            indice =  ((Producto) valor).getIndice();
+        } else if (tipo=="CLIENTE") {
+            indice =  ((Cliente) valor).getIndice();
+        } else {
+            indice = "0";
         }
-                        
         return Integer.parseInt(indice);
-        
     }
     
     private String [] getRegistro(Padre valor,String tipo){
-
-        switch (tipo) {
-            case "EMPLEADO": return ((Empleado) valor).getRegistro();
-            case "PRODUCTO": return ((Producto) valor).getRegistro();
-            case "CLIENTE":  return ((Cliente) valor).getRegistro();
-            default: return new String[]{""};
-        } 
+        if (tipo=="EMPLEADO") {
+            return ((Empleado) valor).getRegistro();
+        } else if (tipo=="PRODUCTO") {
+            return ((Producto) valor).getRegistro();
+        } else if (tipo=="CLIENTE") {
+            return ((Cliente) valor).getRegistro();
+        } else {
+            return new String[]{""};
+        }
     }
     
     private String [] getActualizar(Padre valor,String tipo){
-
-        switch (tipo) {
-            case "EMPLEADO": return ((Empleado) valor).getActualizar();
-            case "PRODUCTO": return ((Producto) valor).getActualizar();
-            case "CLIENTE":  return ((Cliente) valor).getActualizar();
-            default: return new String[]{""};
-        } 
+        if (tipo=="EMPLEADO") {
+            return ((Empleado) valor).getActualizar();
+        } else if (tipo=="PRODUCTO") {
+            return ((Producto) valor).getActualizar();
+        } else if (tipo=="CLIENTE") {
+            return ((Cliente) valor).getActualizar();
+        } else {
+            return new String[]{""};
+        }
     }
     
     private String Obtener_columna_antes_indice(String tipo){
-        switch (tipo) {
-            case "EMPLEADO": return Empleado.COLUMNA_SIN_INDICE;
-            case "PRODUCTO": return Producto.COLUMNA_SIN_INDICE;
-            case "CLIENTE":  return Cliente.COLUMNA_SIN_INDICE;
-            default:         return "PEPITO14";
+        if (tipo=="EMPLEADO") {
+            return Empleado.COLUMNA_SIN_INDICE;
+        } else if (tipo=="PRODUCTO") {
+            return Producto.COLUMNA_SIN_INDICE;
+        } else if (tipo=="CLIENTE") {
+            return Cliente.COLUMNA_SIN_INDICE;
+        } else {
+            return "PEPITO14";
         }
     }
     
     private String Obtener_rango(Padre valor ,String tipo){
         String indice = String.valueOf(Obtener_indice(valor, tipo));
         
-        return "!A"+indice+Obtener_columna_antes_indice(tipo)+indice;
+        return "!A"+indice+":"+Obtener_columna_antes_indice(tipo)+indice;
     }
     
     private int Obtener_id_hoja(String tipo){
-        switch (tipo) {
-            case "EMPLEADO": return Empleado.ID_HOJA;
-            case "PRODUCTO": return Producto.ID_HOJA;
-            case "CLIENTE":  return Cliente.ID_HOJA;
-            default:         return 0;
+        if (tipo=="EMPLEADO") {
+            return Empleado.ID_HOJA;
+        } else if (tipo=="PRODUCTO") {
+            return Producto.ID_HOJA;
+        } else if (tipo=="CLIENTE") {
+            return Cliente.ID_HOJA;
+        } else {
+            return 0;
         }
     }
 
