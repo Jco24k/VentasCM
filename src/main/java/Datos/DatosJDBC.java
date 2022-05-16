@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import Interface.DatosDao;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -105,6 +106,7 @@ public class DatosJDBC implements DatosDao {
                     .execute();
             return 1;
         } catch (Exception ex) {
+            System.out.println("ex = " + ex);
             return 0;
         }
     }
