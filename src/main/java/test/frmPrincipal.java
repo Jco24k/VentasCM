@@ -116,7 +116,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         setMaximumSize(new java.awt.Dimension(850, 550));
         setMinimumSize(new java.awt.Dimension(850, 550));
         setSize(new java.awt.Dimension(850, 550));
-        getContentPane().setLayout(new java.awt.GridLayout());
+        getContentPane().setLayout(new java.awt.GridLayout(1, 0));
 
         jPanel1.setBackground(new java.awt.Color(45, 45, 45));
         jPanel1.setLayout(new java.awt.GridBagLayout());
