@@ -15,11 +15,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import test.frmCliente;
 import test.frmPrincipal;
 import test.frmEmpleado;
@@ -34,6 +37,7 @@ public class Control implements MouseListener {
     frmEmpleado WindowEmpleado;
     frmCliente WindowCliente;
     DatosDao datos_excel;
+    List<Padre> lista_datos = new ArrayList<Padre>();
 
     public Control() {
         WindowPrincipal = new frmPrincipal();
@@ -51,8 +55,18 @@ public class Control implements MouseListener {
         WindowPrincipal.getBtnVentas().addMouseListener(this);
         WindowPrincipal.getEscritorio().add(WindowEmpleado);
         WindowEmpleado.setVisible(true);
+        cargando("EMPLEADO");
 
+    }
 
+    public void cargando(String opcion) {
+        datos_excel = new DatosJDBC();
+        try {
+            lista_datos = datos_excel.read(opcion);
+            completar_datos(lista_datos, opcion, false);
+        } catch (Exception ex) {
+            System.out.println("Error");
+        }
     }
 
     private void cargar_ventanas(String opcion) {
@@ -95,22 +109,26 @@ public class Control implements MouseListener {
         }
     }
 
-    public void completar_datos(List<Padre> lista_datos, String opcion) {
-        for (Padre emp : lista_datos) {
-            switch (opcion) {
-                case "EMPLEADO":
-                    Empleado e = (Empleado) emp;
-                    WindowEmpleado.getLlenar_tabla().addRow(new String[]{e.getNombre(),
-                        e.getApellido(), e.getDni(), e.getTelefono()});
-                    break;
-                case "CLIENTE":
-                    Cliente c = (Cliente) emp;
-                    WindowEmpleado.getLlenar_tabla().addRow(new String[]{c.getNombre(),
-                        c.getDni_ruc(), c.getTelefono(), c.getGeolocalizacion()});
-                    break;
-                default:
-                    break;
+    public void completar_datos(List<Padre> lista_datos, String opcion, boolean busqueda) {
+        for (Padre dato : lista_datos) {
+            if (!busqueda) {
+                if (opcion.equals("EMPLEADO")) {
+                    WindowEmpleado.getLlenar_tabla().addRow(dato.llenar_datos_tbl());
+                } else if (opcion.equals("CLIENTE")) {
+                    WindowCliente.getLlenar_tabla().addRow(dato.llenar_datos_tbl());
+                }
+            }
 
+        }
+        DefaultTableCellRenderer Alinear = new DefaultTableCellRenderer();
+        Alinear.setHorizontalAlignment(SwingConstants.CENTER);
+        if (opcion.equals("EMPLEADO")) {
+            for (int i = 0; i < WindowEmpleado.getTblDatos().getColumnCount(); i++) {
+                WindowEmpleado.getTblDatos().getColumnModel().getColumn(i).setCellRenderer(Alinear);
+            }
+        }else if(opcion.equals("CLIENTE")){
+            for (int i = 0; i < WindowCliente.getTblDatos().getColumnCount(); i++) {
+                WindowCliente.getTblDatos().getColumnModel().getColumn(i).setCellRenderer(Alinear);
             }
         }
 

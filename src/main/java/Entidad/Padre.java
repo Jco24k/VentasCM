@@ -12,4 +12,8 @@ public class Padre {
     public String Generar_Codigo(String valor){
         return "P"+valor;
     }
+    
+    public String [] llenar_datos_tbl(){
+        return new String[]{};
+    }
 }

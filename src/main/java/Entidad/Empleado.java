@@ -159,6 +159,14 @@ public class Empleado  extends Padre{
         System.out.println(codigo);
         return new String[]{codigo,nombre,apellido,dni,telefono,direccion,cod_ruta,usuario,password};
     }
+    
+    public String [] llenar_datos_tbl(){
+        return new String[]{nombre,apellido,dni,telefono};
+    }
+    
+    public String[] llenar_datos_texto(){
+        return new String[]{codigo,nombre,apellido,dni,telefono,direccion,cod_ruta,usuario,password,indice};
+    }
 
 
     
