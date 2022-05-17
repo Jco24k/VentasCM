@@ -6,6 +6,7 @@ package test;
 
 import java.awt.Color;
 import java.awt.Font;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -75,6 +76,78 @@ public class frmEmpleado extends javax.swing.JInternalFrame {
     
     public void setTxtBusquedaEmp(JTextField txtBusquedaEmp) {
         this.txtBusqueda = txtBusquedaEmp;
+    }
+
+    public JComboBox<String> getCbxRuta() {
+        return cbxRuta;
+    }
+
+    public void setCbxRuta(JComboBox<String> cbxRuta) {
+        this.cbxRuta = cbxRuta;
+    }
+
+    public JTextField getTxtApellido() {
+        return txtApellido;
+    }
+
+    public void setTxtApellido(JTextField txtApellido) {
+        this.txtApellido = txtApellido;
+    }
+
+    public JTextField getTxtCodgo() {
+        return txtCodgo;
+    }
+
+    public void setTxtCodgo(JTextField txtCodgo) {
+        this.txtCodgo = txtCodgo;
+    }
+
+    public JTextField getTxtContra() {
+        return txtContra;
+    }
+
+    public void setTxtContra(JTextField txtContra) {
+        this.txtContra = txtContra;
+    }
+
+    public JTextField getTxtDireccion() {
+        return txtDireccion;
+    }
+
+    public void setTxtDireccion(JTextField txtDireccion) {
+        this.txtDireccion = txtDireccion;
+    }
+
+    public JTextField getTxtDni() {
+        return txtDni;
+    }
+
+    public void setTxtDni(JTextField txtDni) {
+        this.txtDni = txtDni;
+    }
+
+    public JTextField getTxtNombre() {
+        return txtNombre;
+    }
+
+    public void setTxtNombre(JTextField txtNombre) {
+        this.txtNombre = txtNombre;
+    }
+
+    public JTextField getTxtTelefono() {
+        return txtTelefono;
+    }
+
+    public void setTxtTelefono(JTextField txtTelefono) {
+        this.txtTelefono = txtTelefono;
+    }
+
+    public JTextField getTxtUsuario() {
+        return txtUsuario;
+    }
+
+    public void setTxtUsuario(JTextField txtUsuario) {
+        this.txtUsuario = txtUsuario;
     }
 
     /**

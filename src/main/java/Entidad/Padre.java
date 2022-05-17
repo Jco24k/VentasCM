@@ -16,4 +16,7 @@ public class Padre {
     public String [] llenar_datos_tbl(){
         return new String[]{};
     }
+    public Padre llenar_datos_texto(){
+        return this;
+    }
 }

@@ -151,7 +151,6 @@ public class Empleado  extends Padre{
     }
 
     public String [] getRegistro(){
-        System.out.println(codigo);
         return new String[]{codigo,nombre,apellido,dni,telefono,direccion,cod_ruta,usuario,password,"=FILA()"};
     }
 
@@ -164,8 +163,8 @@ public class Empleado  extends Padre{
         return new String[]{nombre,apellido,dni,telefono};
     }
     
-    public String[] llenar_datos_texto(){
-        return new String[]{codigo,nombre,apellido,dni,telefono,direccion,cod_ruta,usuario,password,indice};
+    public Empleado llenar_datos_texto(){
+        return this;
     }
 
 

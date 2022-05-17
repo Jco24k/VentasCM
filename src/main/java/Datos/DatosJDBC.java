@@ -8,6 +8,7 @@ import Entidad.Cliente;
 import Entidad.Empleado;
 import Entidad.Padre;
 import Entidad.Producto;
+import Entidad.Ruta;
 
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.AppendValuesResponse;
@@ -73,14 +74,21 @@ public class DatosJDBC implements DatosDao {
                         row.get(2).toString(), row.get(3).toString(), row.get(4).toString(),
                         row.get(5).toString(), row.get(6).toString(), row.get(7).toString(),
                         row.get(8).toString(), Integer.parseInt(row.get(9).toString()))
-                : ( tipo.equalsIgnoreCase("PRODUCTO") ? new Producto(row.get(0).toString(), row.get(1).toString(),
+                : ( tipo.equalsIgnoreCase("PRODUCTO") ?
+                new Producto(row.get(0).toString(), row.get(1).toString(),
                 row.get(2).toString(), row.get(3).toString(), row.get(4).toString(),
                 row.get(5).toString(), row.get(6).toString(), row.get(7).toString(),
                 row.get(8).toString(), Integer.parseInt(row.get(9).toString())): 
-                
+                (tipo.equals("CLIENTE")?
                 new Cliente(row.get(0).toString(), row.get(1).toString(),
                 row.get(2).toString(), row.get(3).toString(), row.get(4).toString(),
-                row.get(5).toString(), Integer.parseInt(row.get(6).toString()))));
+                row.get(5).toString(), Integer.parseInt(row.get(6).toString()))
+                : new Ruta(row.get(0).toString(), row.get(1).toString(),
+                row.get(2).toString(),row.get(3).toString(),Integer.parseInt(row.get(4).toString())))
+                
+                
+                
+                ));
             }
         }
         return dato;
@@ -160,6 +168,7 @@ public class DatosJDBC implements DatosDao {
             case "EMPLEADO": return Empleado.HOJA;
             case "PRODUCTO": return Producto.HOJA;
             case "CLIENTE":  return Cliente.HOJA;
+            case "RUTA": return Ruta.HOJA;
             default:         return "PEPITO14";
         }
     }
@@ -169,6 +178,7 @@ public class DatosJDBC implements DatosDao {
             case "EMPLEADO": return Empleado.COLUMNA;
             case "PRODUCTO": return Producto.COLUMNA;
             case "CLIENTE":  return Cliente.COLUMNA;
+            case "RUTA": return Ruta.COLUMNA;
             default:         return "PEPITO14";
         }
     }
@@ -179,6 +189,7 @@ public class DatosJDBC implements DatosDao {
             case "EMPLEADO": indice = ((Empleado) valor).getIndice(); break;
             case "PRODUCTO": indice =  ((Producto) valor).getIndice(); break;
             case "CLIENTE":  indice =  ((Cliente) valor).getIndice(); break;
+            case "RUTA": indice = ((Ruta) valor).getIndice(); break;
             default: indice = "0"; break;
         }
                         
@@ -211,6 +222,7 @@ public class DatosJDBC implements DatosDao {
             case "EMPLEADO": return Empleado.COLUMNA_SIN_INDICE;
             case "PRODUCTO": return Producto.COLUMNA_SIN_INDICE;
             case "CLIENTE":  return Cliente.COLUMNA_SIN_INDICE;
+            case "RUTA": return Ruta.COLUMNA_SIN_INDICE;
             default:         return "PEPITO14";
         }
     }

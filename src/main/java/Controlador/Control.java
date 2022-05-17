@@ -8,9 +8,12 @@ import Datos.DatosJDBC;
 import Entidad.Cliente;
 import Entidad.Empleado;
 import Entidad.Padre;
+import Entidad.Ruta;
 import Interface.DatosDao;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -31,13 +34,14 @@ import test.frmEmpleado;
  *
  * @author 51934
  */
-public class Control implements MouseListener {
+public class Control implements MouseListener, KeyListener {
 
     frmPrincipal WindowPrincipal;
     frmEmpleado WindowEmpleado;
     frmCliente WindowCliente;
     DatosDao datos_excel;
     List<Padre> lista_datos = new ArrayList<Padre>();
+    List<Padre> lista_rutas = new ArrayList<Padre>();
 
     public Control() {
         WindowPrincipal = new frmPrincipal();
@@ -53,12 +57,26 @@ public class Control implements MouseListener {
         WindowPrincipal.getBtnCliente().addMouseListener(this);
         WindowPrincipal.getBtnProducto().addMouseListener(this);
         WindowPrincipal.getBtnVentas().addMouseListener(this);
+        WindowEmpleado.getTxtBusqueda().addKeyListener(this);
+        WindowEmpleado.getTblDatos().addMouseListener(this);
         WindowPrincipal.getEscritorio().add(WindowEmpleado);
         WindowEmpleado.setVisible(true);
         cargando("EMPLEADO");
+        cargar_cbx();
 
     }
-
+    public void cargar_cbx(){
+        datos_excel = new DatosJDBC();
+        try {
+            lista_rutas = datos_excel.read("RUTA");
+            for(Padre rutas: lista_rutas){
+                Ruta rt =  (Ruta) rutas;
+                WindowEmpleado.getCbxRuta().addItem(rt.getZona());
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+    }
     public void cargando(String opcion) {
         datos_excel = new DatosJDBC();
         try {
@@ -103,33 +121,89 @@ public class Control implements MouseListener {
         } else if (e.getSource().equals(WindowPrincipal.getBtnCliente())) {
             if (!WindowCliente.isVisible()) {
                 cargar_ventanas("CLIENTE");
+            }
+        } else if (e.getSource().equals(WindowEmpleado.getTblDatos())) {
+            String dni = (String) WindowEmpleado.getLlenar_tabla().getValueAt((WindowEmpleado.getTblDatos().getSelectedRow()), 2);
+            click_tabla("EMPLEADO", dni);
+            WindowEmpleado.getTxtCodgo().setEditable(false);
+        }
+    }
 
+    private void click_tabla(String opcion, String buscar) {
+        for (Padre dato : lista_datos) {
+            if (opcion.equals("EMPLEADO")) {
+                Empleado emp_select = (Empleado)dato.llenar_datos_texto();
+                if (buscar.equals(emp_select.getDni())) {
+                    WindowEmpleado.getTxtCodgo().setText(emp_select.getCodigo());
+                    WindowEmpleado.getTxtNombre().setText(emp_select.getNombre());
+                    WindowEmpleado.getTxtApellido().setText(emp_select.getApellido());
+                    WindowEmpleado.getTxtDni().setText(emp_select.getDni());
+                    WindowEmpleado.getTxtTelefono().setText(emp_select.getTelefono());
+                    WindowEmpleado.getTxtDireccion().setText(emp_select.getDireccion());             
+                    WindowEmpleado.getTxtUsuario().setText(emp_select.getUsuario());
+                    WindowEmpleado.getTxtContra().setText(emp_select.getPassword());
+                    for(Padre rt : lista_rutas){
+                        Ruta ruta = (Ruta) rt;
+                        if(ruta.getCodigo().equals(emp_select.getCod_ruta())){
+                            WindowEmpleado.getCbxRuta().setSelectedItem(ruta.getZona());
+                        }
+                    }
+                    
+                    break;
+                }
             }
 
         }
     }
 
     public void completar_datos(List<Padre> lista_datos, String opcion, boolean busqueda) {
+
+        //LIMPIAMOS LOS DEFAULT MODEL DE LA TABLA 
+        WindowEmpleado.getLlenar_tabla().setRowCount(0);
+        WindowCliente.getLlenar_tabla().setRowCount(0);
+
         for (Padre dato : lista_datos) {
+            String[] datos_llenar = new String[]{};
             if (!busqueda) {
+                datos_llenar = dato.llenar_datos_tbl();
+            } else {
+                String buscar_datos = "";
                 if (opcion.equals("EMPLEADO")) {
-                    WindowEmpleado.getLlenar_tabla().addRow(dato.llenar_datos_tbl());
+                    buscar_datos = WindowEmpleado.getTxtBusqueda().getText();
                 } else if (opcion.equals("CLIENTE")) {
-                    WindowCliente.getLlenar_tabla().addRow(dato.llenar_datos_tbl());
+                    buscar_datos = WindowCliente.getTxtBusqueda().getText();
+                }
+                if (dato.llenar_datos_tbl()[0].substring(0, buscar_datos.length()).equalsIgnoreCase(buscar_datos)) {
+                    datos_llenar = dato.llenar_datos_tbl();
+                } else {
+                    continue;
                 }
             }
-
+            if (opcion.equals("EMPLEADO")) {
+                WindowEmpleado.getLlenar_tabla().addRow(datos_llenar);
+            } else if (opcion.equals("CLIENTE")) {
+                WindowCliente.getLlenar_tabla().addRow(datos_llenar);
+            }
         }
+
+        //CENTRAR DATOS DE LA TABLA
         DefaultTableCellRenderer Alinear = new DefaultTableCellRenderer();
         Alinear.setHorizontalAlignment(SwingConstants.CENTER);
         if (opcion.equals("EMPLEADO")) {
             for (int i = 0; i < WindowEmpleado.getTblDatos().getColumnCount(); i++) {
                 WindowEmpleado.getTblDatos().getColumnModel().getColumn(i).setCellRenderer(Alinear);
             }
-        }else if(opcion.equals("CLIENTE")){
+        } else if (opcion.equals("CLIENTE")) {
             for (int i = 0; i < WindowCliente.getTblDatos().getColumnCount(); i++) {
                 WindowCliente.getTblDatos().getColumnModel().getColumn(i).setCellRenderer(Alinear);
             }
+        }
+
+    }
+
+    public void keyReleased(KeyEvent e) {
+        if (e.getSource().equals(WindowEmpleado.getTxtBusqueda())) {
+            completar_datos(lista_datos, "EMPLEADO", true);
         }
 
     }
@@ -147,6 +221,14 @@ public class Control implements MouseListener {
     }
 
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    public void keyPressed(KeyEvent e) {
 
     }
 
