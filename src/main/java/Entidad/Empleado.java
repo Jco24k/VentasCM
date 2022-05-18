@@ -147,7 +147,7 @@ public class Empleado  extends Padre{
     @Override
     public String Generar_Codigo(String dni){
 
-        return "E"+dni;
+        return "EM"+dni;
     }
 
     public String [] getRegistro(){

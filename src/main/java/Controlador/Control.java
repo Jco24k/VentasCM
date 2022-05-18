@@ -5,25 +5,18 @@
 package Controlador;
 
 import Datos.DatosJDBC;
-import Entidad.Cliente;
 import Entidad.Empleado;
 import Entidad.Padre;
 import Entidad.Ruta;
 import Interface.DatosDao;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -76,6 +69,7 @@ public class Control implements MouseListener, KeyListener, ActionListener {
 
     public void cargar_cbx() {
         datos_excel = new DatosJDBC();
+        WindowEmpleado.getCbxRuta().removeAllItems();
         try {
             //AGREGAR LAS RUTAS DE EMPLEADO AL COMBOBOX
             lista_rutas = datos_excel.read("RUTA");
@@ -263,15 +257,50 @@ public class Control implements MouseListener, KeyListener, ActionListener {
                     && !WindowEmpleado.getTxtApellido().getText().isEmpty() && !WindowEmpleado.getTxtDni().getText().isEmpty()
                     && !WindowEmpleado.getTxtTelefono().getText().isEmpty() && !WindowEmpleado.getTxtDireccion().getText().isBlank()
                     && !WindowEmpleado.getTxtUsuario().getText().isEmpty() && !WindowEmpleado.getTxtContra().getText().isEmpty()) {
-
-                JOptionPane.showMessageDialog(null, "Datos validos");
+                
+                
+                String zona = (String) WindowEmpleado.getCbxRuta().getSelectedItem();
+                String codigo = "";
+                for(Padre dt : lista_rutas){
+                    Ruta ruta = (Ruta) dt;
+                    if(ruta.getZona().equals(zona)){
+                        codigo = ruta.getCodigo();
+                        break;
+                    }
+                }
+                Padre emp = new Empleado(WindowEmpleado.getTxtNombre().getText(),
+                        WindowEmpleado.getTxtApellido().getText(), WindowEmpleado.getTxtDni().getText(), 
+                        WindowEmpleado.getTxtTelefono().getText(), WindowEmpleado.getTxtDireccion().getText(),
+                        codigo,
+                        WindowEmpleado.getTxtUsuario().getText(), WindowEmpleado.getTxtContra().getText());
+                
+                registrar_datos(emp, opcion);
+                JOptionPane.showMessageDialog(null, "REGISTRO REALIZADO CORRECTAMENTE");
+                cargando(opcion);
+                cargar_cbx();
+                limpiar(opcion);
             } else {
                 JOptionPane.showMessageDialog(null, "Completar todos los campos");
             }
         }
 
     }
-
+    private void registrar_datos(Padre dato,String opcion){
+        datos_excel = new DatosJDBC();
+        try {
+            //AGREGAR LAS RUTAS DE EMPLEADO AL COMBOBOX
+            for(Padre dt:lista_datos){
+                String codigo = ((Empleado) dt).getCodigo();
+                if(codigo.equals(WindowEmpleado.getTxtCodgo().getText())){
+                    break;              
+                }
+            }
+            datos_excel.insert(dato,opcion);
+            
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+    }
     public void keyReleased(KeyEvent e) {
         if (e.getSource().equals(WindowEmpleado.getTxtBusqueda())) {
             completar_datos(lista_datos, "EMPLEADO", true);

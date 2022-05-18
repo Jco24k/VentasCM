@@ -4,6 +4,7 @@
  */
 package test;
 
+import Entidad.Empleado;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JButton;
@@ -22,36 +23,37 @@ public class frmEmpleado extends javax.swing.JInternalFrame {
     /**
      * Creates new form frmEmpleado
      */
-    
     private DefaultTableModel llenar_tabla = new DefaultTableModel() {
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
         }
     };
-    
+
     public frmEmpleado() {
         initComponents();
         ((javax.swing.plaf.basic.BasicInternalFrameUI) this.getUI()).setNorthPane(null);
         cargar_cabecera_tabla();
         txtCodgo.setEditable(false);
-        txtContra.setEchoChar((char)0);
+        txtContra.setEchoChar((char) 0);
     }
 
-    public void cargar_cabecera_tabla(){
+    public void cargar_cabecera_tabla() {
         llenar_tabla.setColumnCount(0);
-        for (String columna : new String[]{"NOMBRE", "APELLIDO", "DNI","TELEFONO"}) {
+        for (String columna : new String[]{"NOMBRE", "APELLIDO", "DNI", "TELEFONO"}) {
             llenar_tabla.addColumn(columna);
             cabecera_color();
         }
     }
-    public void cabecera_color(){
+
+    public void cabecera_color() {
         tblDatos.setModel(llenar_tabla);
         tblDatos.getTableHeader().setBackground(new Color(51, 51, 51));
         tblDatos.getTableHeader().setForeground(Color.WHITE);
         tblDatos.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 15));
         tblDatos.setShowGrid(false);
     }
+
     public DefaultTableModel getLlenar_tabla() {
         return llenar_tabla;
     }
@@ -76,8 +78,6 @@ public class frmEmpleado extends javax.swing.JInternalFrame {
         this.txtBusqueda = txtBusqueda;
     }
 
-
-   
     public JComboBox<String> getCbxRuta() {
         return cbxRuta;
     }
@@ -109,8 +109,6 @@ public class frmEmpleado extends javax.swing.JInternalFrame {
     public void setTxtContra(JPasswordField txtContra) {
         this.txtContra = txtContra;
     }
-
-    
 
     public JTextField getTxtDireccion() {
         return txtDireccion;
@@ -281,6 +279,14 @@ public class frmEmpleado extends javax.swing.JInternalFrame {
         jLabel5.setText("Dni:");
 
         txtDni.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtDni.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtDniKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDniKeyTyped(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         jLabel6.setText("Telefono:");
@@ -443,6 +449,19 @@ public class frmEmpleado extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void txtDniKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDniKeyReleased
+        // TODO add your handling code here:
+        Empleado emp = new Empleado();
+        txtCodgo.setText(emp.Generar_Codigo(txtDni.getText()));
+    }//GEN-LAST:event_txtDniKeyReleased
+
+    private void txtDniKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDniKeyTyped
+        // TODO add your handling code here:
+        if (Character.isLetter(evt.getKeyChar()) || txtDni.getText().length() == 8) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtDniKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
