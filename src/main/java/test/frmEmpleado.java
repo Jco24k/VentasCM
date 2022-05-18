@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JPasswordField;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -34,6 +35,7 @@ public class frmEmpleado extends javax.swing.JInternalFrame {
         ((javax.swing.plaf.basic.BasicInternalFrameUI) this.getUI()).setNorthPane(null);
         cargar_cabecera_tabla();
         txtCodgo.setEditable(false);
+        txtContra.setEchoChar((char)0);
     }
 
     public void cargar_cabecera_tabla(){
@@ -100,13 +102,15 @@ public class frmEmpleado extends javax.swing.JInternalFrame {
         this.txtCodgo = txtCodgo;
     }
 
-    public JTextField getTxtContra() {
+    public JPasswordField getTxtContra() {
         return txtContra;
     }
 
-    public void setTxtContra(JTextField txtContra) {
+    public void setTxtContra(JPasswordField txtContra) {
         this.txtContra = txtContra;
     }
+
+    
 
     public JTextField getTxtDireccion() {
         return txtDireccion;
@@ -216,7 +220,7 @@ public class frmEmpleado extends javax.swing.JInternalFrame {
         jLabel9 = new javax.swing.JLabel();
         txtUsuario = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        txtContra = new javax.swing.JTextField();
+        txtContra = new javax.swing.JPasswordField();
 
         setBorder(null);
         setMaximumSize(new java.awt.Dimension(770, 660));
@@ -335,12 +339,11 @@ public class frmEmpleado extends javax.swing.JInternalFrame {
                     .addComponent(jLabel8)
                     .addComponent(jLabel7))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtContra, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(cbxRuta, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtUsuario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-                        .addComponent(txtDireccion, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(cbxRuta, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtUsuario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                    .addComponent(txtDireccion, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                    .addComponent(txtContra))
                 .addContainerGap(70, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -467,7 +470,7 @@ public class frmEmpleado extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtApellido;
     private javax.swing.JTextField txtBusqueda;
     private javax.swing.JTextField txtCodgo;
-    private javax.swing.JTextField txtContra;
+    private javax.swing.JPasswordField txtContra;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtDni;
     private javax.swing.JTextField txtNombre;

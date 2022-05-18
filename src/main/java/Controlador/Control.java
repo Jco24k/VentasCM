@@ -168,6 +168,7 @@ public class Control implements MouseListener, KeyListener, ActionListener {
                     WindowEmpleado.getTxtDireccion().setText(emp_select.getDireccion());
                     WindowEmpleado.getTxtUsuario().setText(emp_select.getUsuario());
                     WindowEmpleado.getTxtContra().setText(emp_select.getPassword());
+                    WindowEmpleado.getTxtContra().setEchoChar('*');
 
                     //SELECCIONAR LA RUTA DEL EMPLEADO SELECCIONADO EN EL COMBOBOX
                     for (Padre rt : lista_rutas) {
@@ -247,8 +248,10 @@ public class Control implements MouseListener, KeyListener, ActionListener {
             WindowEmpleado.getTxtDireccion().setText("");
             WindowEmpleado.getTxtUsuario().setText("");
             WindowEmpleado.getTxtContra().setText("");
+            WindowEmpleado.getTxtContra().setEchoChar((char)0);
             WindowEmpleado.getTxtBusqueda().setText("");
             WindowEmpleado.getCbxRuta().setSelectedIndex(0);
+            
 
         }
 
