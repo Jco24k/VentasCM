@@ -155,7 +155,6 @@ public class Empleado  extends Padre{
     }
 
     public String [] getActualizar(){
-        System.out.println(codigo);
         return new String[]{codigo,nombre,apellido,dni,telefono,direccion,cod_ruta,usuario,password};
     }
     

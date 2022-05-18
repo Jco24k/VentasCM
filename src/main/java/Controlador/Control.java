@@ -12,6 +12,8 @@ import Entidad.Ruta;
 import Interface.DatosDao;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
@@ -34,7 +37,7 @@ import test.frmEmpleado;
  *
  * @author 51934
  */
-public class Control implements MouseListener, KeyListener {
+public class Control implements MouseListener, KeyListener, ActionListener {
 
     frmPrincipal WindowPrincipal;
     frmEmpleado WindowEmpleado;
@@ -42,6 +45,7 @@ public class Control implements MouseListener, KeyListener {
     DatosDao datos_excel;
     List<Padre> lista_datos = new ArrayList<Padre>();
     List<Padre> lista_rutas = new ArrayList<Padre>();
+    Empleado emp_select = new Empleado();
 
     public Control() {
         WindowPrincipal = new frmPrincipal();
@@ -53,34 +57,48 @@ public class Control implements MouseListener, KeyListener {
 
     public void Cargar() {
         WindowPrincipal.setVisible(true);
+
+        //ASIGNARLES EVENTOS
         WindowPrincipal.getBtnEmpleado().addMouseListener(this);
         WindowPrincipal.getBtnCliente().addMouseListener(this);
         WindowPrincipal.getBtnProducto().addMouseListener(this);
         WindowPrincipal.getBtnVentas().addMouseListener(this);
         WindowEmpleado.getTxtBusqueda().addKeyListener(this);
         WindowEmpleado.getTblDatos().addMouseListener(this);
+        WindowEmpleado.getBtnRegistrar().addActionListener(this);
+        WindowEmpleado.getBtnLimpiar().addActionListener(this);
         WindowPrincipal.getEscritorio().add(WindowEmpleado);
         WindowEmpleado.setVisible(true);
         cargando("EMPLEADO");
         cargar_cbx();
 
     }
-    public void cargar_cbx(){
+
+    public void cargar_cbx() {
         datos_excel = new DatosJDBC();
         try {
+            //AGREGAR LAS RUTAS DE EMPLEADO AL COMBOBOX
             lista_rutas = datos_excel.read("RUTA");
-            for(Padre rutas: lista_rutas){
-                Ruta rt =  (Ruta) rutas;
+            for (Padre rutas : lista_rutas) {
+                Ruta rt = (Ruta) rutas;
                 WindowEmpleado.getCbxRuta().addItem(rt.getZona());
             }
+
+            //CENTRAR DATOS COMBO BOX
+            DefaultListCellRenderer listRenderer = new DefaultListCellRenderer();
+            listRenderer.setHorizontalAlignment(DefaultListCellRenderer.CENTER); // center-aligned items
+            WindowEmpleado.getCbxRuta().setRenderer(listRenderer);
         } catch (Exception ex) {
             System.out.println(ex);
         }
     }
+
     public void cargando(String opcion) {
         datos_excel = new DatosJDBC();
         try {
+            //EXTRAER UNA LISTA CON LOS DATOS DEL EXCEL
             lista_datos = datos_excel.read(opcion);
+            //LLENAR A LA TABLA LOS DATOS
             completar_datos(lista_datos, opcion, false);
         } catch (Exception ex) {
             System.out.println("Error");
@@ -88,6 +106,7 @@ public class Control implements MouseListener, KeyListener {
     }
 
     private void cargar_ventanas(String opcion) {
+        //LIMPIAR Y OCULTAR LAS VENTANAS
         JInternalFrame[] ventanas = {WindowEmpleado, WindowCliente};
         for (JInternalFrame vent : ventanas) {
             vent.setVisible(false);
@@ -95,6 +114,7 @@ public class Control implements MouseListener, KeyListener {
             WindowPrincipal.getEscritorio().updateUI();
             vent.dispose();
         }
+        //ABRIR LA VENTANA SELECCIONADA
         switch (opcion) {
             case "EMPLEADO":
                 WindowPrincipal.getEscritorio().add(WindowEmpleado);
@@ -116,13 +136,18 @@ public class Control implements MouseListener, KeyListener {
         if (e.getSource().equals(WindowPrincipal.getBtnEmpleado())) {
             if (!WindowEmpleado.isVisible()) {
                 cargar_ventanas("EMPLEADO");
+                cargando("EMPLEADO");
+                cargar_cbx();
+                limpiar("EMPLEADO");
 
             }
         } else if (e.getSource().equals(WindowPrincipal.getBtnCliente())) {
             if (!WindowCliente.isVisible()) {
                 cargar_ventanas("CLIENTE");
+                cargando("CLIENTE");
             }
         } else if (e.getSource().equals(WindowEmpleado.getTblDatos())) {
+            //AL MOMENTO DE DAR CLICK A LA TABLA OBTENER EL DNI PARA LUEGO BUSCARLO
             String dni = (String) WindowEmpleado.getLlenar_tabla().getValueAt((WindowEmpleado.getTblDatos().getSelectedRow()), 2);
             click_tabla("EMPLEADO", dni);
             WindowEmpleado.getTxtCodgo().setEditable(false);
@@ -132,23 +157,26 @@ public class Control implements MouseListener, KeyListener {
     private void click_tabla(String opcion, String buscar) {
         for (Padre dato : lista_datos) {
             if (opcion.equals("EMPLEADO")) {
-                Empleado emp_select = (Empleado)dato.llenar_datos_texto();
+                emp_select = (Empleado) dato.llenar_datos_texto();
                 if (buscar.equals(emp_select.getDni())) {
+                    //OBTENER Y MOSTRAR EN PANTALLA LOS DATOS DEL EMPLEADO SELECCIONADO
                     WindowEmpleado.getTxtCodgo().setText(emp_select.getCodigo());
                     WindowEmpleado.getTxtNombre().setText(emp_select.getNombre());
                     WindowEmpleado.getTxtApellido().setText(emp_select.getApellido());
                     WindowEmpleado.getTxtDni().setText(emp_select.getDni());
                     WindowEmpleado.getTxtTelefono().setText(emp_select.getTelefono());
-                    WindowEmpleado.getTxtDireccion().setText(emp_select.getDireccion());             
+                    WindowEmpleado.getTxtDireccion().setText(emp_select.getDireccion());
                     WindowEmpleado.getTxtUsuario().setText(emp_select.getUsuario());
                     WindowEmpleado.getTxtContra().setText(emp_select.getPassword());
-                    for(Padre rt : lista_rutas){
+
+                    //SELECCIONAR LA RUTA DEL EMPLEADO SELECCIONADO EN EL COMBOBOX
+                    for (Padre rt : lista_rutas) {
                         Ruta ruta = (Ruta) rt;
-                        if(ruta.getCodigo().equals(emp_select.getCod_ruta())){
+                        if (ruta.getCodigo().equals(emp_select.getCod_ruta())) {
                             WindowEmpleado.getCbxRuta().setSelectedItem(ruta.getZona());
                         }
                     }
-                    
+
                     break;
                 }
             }
@@ -164,15 +192,17 @@ public class Control implements MouseListener, KeyListener {
 
         for (Padre dato : lista_datos) {
             String[] datos_llenar = new String[]{};
-            if (!busqueda) {
-                datos_llenar = dato.llenar_datos_tbl();
+            if (!busqueda) { //VERIFICAMOS SI LA OPCION BUSQUEDA ES VERDAD O NO
+                datos_llenar = dato.llenar_datos_tbl(); //OBTIENEN UN ARREGLO CON LOS DATOS A MOSTRAR EN LA TABLA
             } else {
                 String buscar_datos = "";
+                //OBTENGO EL DATO DE LA BUSQUEDA
                 if (opcion.equals("EMPLEADO")) {
                     buscar_datos = WindowEmpleado.getTxtBusqueda().getText();
                 } else if (opcion.equals("CLIENTE")) {
                     buscar_datos = WindowCliente.getTxtBusqueda().getText();
                 }
+                //OBTENER LOS DATOS DE LA CONSULTA
                 if (dato.llenar_datos_tbl()[0].substring(0, buscar_datos.length()).equalsIgnoreCase(buscar_datos)) {
                     datos_llenar = dato.llenar_datos_tbl();
                 } else {
@@ -196,6 +226,45 @@ public class Control implements MouseListener, KeyListener {
         } else if (opcion.equals("CLIENTE")) {
             for (int i = 0; i < WindowCliente.getTblDatos().getColumnCount(); i++) {
                 WindowCliente.getTblDatos().getColumnModel().getColumn(i).setCellRenderer(Alinear);
+            }
+        }
+
+    }
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource().equals(WindowEmpleado.getBtnRegistrar())){
+            validar_datos_registrar("EMPLEADO");
+        }else if(e.getSource().equals(WindowEmpleado.getBtnLimpiar())){
+            limpiar("EMPLEADO");
+        }
+    }
+    public void limpiar(String opcion) {
+        if (opcion.equals("EMPLEADO")) {
+            WindowEmpleado.getTxtCodgo().setText("");
+            WindowEmpleado.getTxtNombre().setText("");
+            WindowEmpleado.getTxtApellido().setText("");
+            WindowEmpleado.getTxtDni().setText("");
+            WindowEmpleado.getTxtTelefono().setText("");
+            WindowEmpleado.getTxtDireccion().setText("");
+            WindowEmpleado.getTxtUsuario().setText("");
+            WindowEmpleado.getTxtContra().setText("");
+            WindowEmpleado.getTxtBusqueda().setText("");
+            WindowEmpleado.getCbxRuta().setSelectedIndex(0);
+
+        }
+
+    }
+
+    private void validar_datos_registrar(String opcion) {
+        if (opcion.equalsIgnoreCase("EMPLEADO")) {
+            //VERIFICAR QUE TODOS LOS CAMPOS ESTEN COMPLETOS
+            if (!WindowEmpleado.getTxtCodgo().getText().isEmpty() && !WindowEmpleado.getTxtNombre().getText().isEmpty()
+                    && !WindowEmpleado.getTxtApellido().getText().isEmpty() && !WindowEmpleado.getTxtDni().getText().isEmpty()
+                    && !WindowEmpleado.getTxtTelefono().getText().isEmpty() && !WindowEmpleado.getTxtDireccion().getText().isBlank()
+                    && !WindowEmpleado.getTxtUsuario().getText().isEmpty() && !WindowEmpleado.getTxtContra().getText().isEmpty()) {
+
+                JOptionPane.showMessageDialog(null, "Datos validos");
+            } else {
+                JOptionPane.showMessageDialog(null, "Completar todos los campos");
             }
         }
 
@@ -231,5 +300,7 @@ public class Control implements MouseListener, KeyListener {
     public void keyPressed(KeyEvent e) {
 
     }
+
+
 
 }

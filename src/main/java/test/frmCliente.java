@@ -35,7 +35,7 @@ public class frmCliente extends javax.swing.JInternalFrame {
 
     public void cargar_cabecera_tabla(){
         llenar_tabla.setColumnCount(0);
-        for (String columna : new String[]{"NOMBRE", "APELLIDO", "DNI","TELEFONO"}) {
+        for (String columna : new String[]{"NOMBRE", "DNI / RUC","DIRECCION","TELEFONO"}) {
             llenar_tabla.addColumn(columna);
             cabecera_color();
         }

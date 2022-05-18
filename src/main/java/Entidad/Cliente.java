@@ -48,7 +48,6 @@ public class Cliente extends Padre {
         this.geolocalizacion = geolocalizacion;
         
         this.indice = String.valueOf(indice);
-        System.out.println("indice = " + indice);
     }
 
     public String getCodigo() {
@@ -111,13 +110,19 @@ public class Cliente extends Padre {
     }
     
     public String [] getRegistro(){
-        System.out.println(codigo);
         return new String[]{codigo,nombre,direccion,dni_ruc,telefono,geolocalizacion,"=FILA()"};
     }
 
     public String [] getActualizar(){
-        System.out.println(codigo);
         return new String[]{codigo,nombre,direccion,dni_ruc,telefono,geolocalizacion};
+    }
+    
+    public String [] llenar_datos_tbl(){
+        return new String[]{nombre,dni_ruc,direccion,telefono};
+    }
+    
+    public Cliente llenar_datos_texto(){
+        return this;
     }
     
 }
