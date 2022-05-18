@@ -83,7 +83,6 @@ public class Control implements MouseListener, KeyListener, ActionListener {
                 Ruta rt = (Ruta) rutas;
                 WindowEmpleado.getCbxRuta().addItem(rt.getZona());
             }
-
             //CENTRAR DATOS COMBO BOX
             DefaultListCellRenderer listRenderer = new DefaultListCellRenderer();
             listRenderer.setHorizontalAlignment(DefaultListCellRenderer.CENTER); // center-aligned items

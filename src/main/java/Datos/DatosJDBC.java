@@ -37,7 +37,6 @@ public class DatosJDBC implements DatosDao {
 
     public List<Padre> read(String tipo) throws GeneralSecurityException, IOException {
 
-
         Sheets service = SheetsQuickstart.getService();
         //OBTENEMOS LA HOJA DE CALCULO A MODIFICAR
         String HOJA = Obtener_hoja(tipo);
@@ -56,6 +55,7 @@ public class DatosJDBC implements DatosDao {
         //ASGINAR EL NUMERO MAXIMO DE FILAS  PARA LUEGO REALIZAR CONSULTAS
         for (List fila : datos) {
             numero_filas = Integer.parseInt("" + fila.get(0));
+            break;
         }
         System.out.println(numero_filas);
         final String range = HOJA + "!A2" + ":" + COLUMNA + numero_filas; //OBTENER TODOS LOS DATOS SEGUN EL MAXIMO DE FILAS
@@ -65,30 +65,30 @@ public class DatosJDBC implements DatosDao {
 
         List<List<Object>> values = response.getValues();
         List<Padre> dato = new ArrayList<Padre>();
-        if (values == null || values.isEmpty()) {
-            System.out.println("No data found.");
-        } else {
+        if (tipo.equalsIgnoreCase("EMPLEADO")) {
             for (List row : values) {
-                dato.add(tipo.equalsIgnoreCase("EMPLEADO")
-                ? new Empleado(row.get(0).toString(), row.get(1).toString(),
+                dato.add(new Empleado(row.get(0).toString(), row.get(1).toString(),
                         row.get(2).toString(), row.get(3).toString(), row.get(4).toString(),
                         row.get(5).toString(), row.get(6).toString(), row.get(7).toString(),
-                        row.get(8).toString(), Integer.parseInt(row.get(9).toString()))
-                : ( tipo.equalsIgnoreCase("PRODUCTO") ?
-                new Producto(row.get(0).toString(), row.get(1).toString(),
-                row.get(2).toString(), row.get(3).toString(), row.get(4).toString(),
-                row.get(5).toString(), row.get(6).toString(), row.get(7).toString(),
-                row.get(8).toString(), Integer.parseInt(row.get(9).toString())): 
-                (tipo.equals("CLIENTE")?
-                new Cliente(row.get(0).toString(), row.get(1).toString(),
-                row.get(2).toString(), row.get(3).toString(), row.get(4).toString(),
-                row.get(5).toString(), Integer.parseInt(row.get(6).toString()))
-                : new Ruta(row.get(0).toString(), row.get(1).toString(),
-                row.get(2).toString(),row.get(3).toString(),Integer.parseInt(row.get(4).toString())))
-                
-                
-                
-                ));
+                        row.get(8).toString(), Integer.parseInt(row.get(9).toString())));
+            }
+        } else if (tipo.equals("PRODUCTO")) {
+            for (List row : values) {
+                dato.add(new Producto(row.get(0).toString(), row.get(1).toString(),
+                        row.get(2).toString(), row.get(3).toString(), row.get(4).toString(),
+                        row.get(5).toString(), row.get(6).toString(), row.get(7).toString(),
+                        row.get(8).toString(), Integer.parseInt(row.get(9).toString())));
+            }
+        } else if (tipo.equals("CLIENTE")) {
+            for (List row : values) {
+                dato.add(new Cliente(row.get(0).toString(), row.get(1).toString(),
+                        row.get(2).toString(), row.get(3).toString(), row.get(4).toString(),
+                        row.get(5).toString(), Integer.parseInt(row.get(6).toString())));
+            }
+        } else if (tipo.equals("RUTA")) {
+            for (List row : values) {
+                dato.add(new Ruta(row.get(0).toString(), row.get(1).toString(),
+                        row.get(2).toString(), row.get(3).toString(), Integer.parseInt(row.get(4).toString())));
             }
         }
         return dato;
@@ -106,7 +106,7 @@ public class DatosJDBC implements DatosDao {
             AppendValuesResponse appendResult = service.spreadsheets().values()
                     .append(spreadsheetId,
                             Obtener_hoja(tipo),
-                             datos)
+                            datos)
                     .setValueInputOption("USER_ENTERED")
                     .setInsertDataOption("INSERT_ROWS")
                     .setIncludeValuesInResponse(true)
@@ -126,9 +126,9 @@ public class DatosJDBC implements DatosDao {
                                     getActualizar(valor, tipo)
                             )
                     ));
-            
+
             UpdateValuesResponse result = service.spreadsheets().values()
-                    .update(spreadsheetId, Obtener_hoja(tipo) + Obtener_rango(valor, tipo),body)
+                    .update(spreadsheetId, Obtener_hoja(tipo) + Obtener_rango(valor, tipo), body)
                     .setValueInputOption("RAW")
                     .execute();
 
@@ -139,7 +139,7 @@ public class DatosJDBC implements DatosDao {
         }
     }
 
-    public int delete(Padre valor,String tipo) {
+    public int delete(Padre valor, String tipo) {
         try {
             Sheets service = SheetsQuickstart.getService();
             DeleteDimensionRequest deleteRequest = new DeleteDimensionRequest()
@@ -148,7 +148,7 @@ public class DatosJDBC implements DatosDao {
                                     .setSheetId(Obtener_id_hoja(tipo))
                                     .setDimension("ROWS")
                                     .setStartIndex(Obtener_indice(valor, tipo) - 1)
-                                    .setEndIndex( Obtener_indice(valor, tipo))
+                                    .setEndIndex(Obtener_indice(valor, tipo))
                     );
             List<Request> requests = new ArrayList<Request>();
             requests.add(new Request().setDeleteDimension(deleteRequest));
@@ -164,80 +164,111 @@ public class DatosJDBC implements DatosDao {
     }
 
     private String Obtener_hoja(String tipo) {
-        switch (tipo) {
-            case "EMPLEADO": return Empleado.HOJA;
-            case "PRODUCTO": return Producto.HOJA;
-            case "CLIENTE":  return Cliente.HOJA;
-            case "RUTA": return Ruta.HOJA;
-            default:         return "PEPITO14";
-        }
+        if(tipo.equals("EMPLEADO")){
+            return Empleado.HOJA;
+        }else if(tipo.equals("RUTA")){
+            return Ruta.HOJA;
+        }else if(tipo.equals("PRODUCTO")){
+            return Producto.HOJA;
+        }else if(tipo.equals("CLIENTE")){
+            return Cliente.HOJA;
+        }else{return "";}
     }
 
-    private String Obtener_columna( String tipo) {
-        switch (tipo) {
-            case "EMPLEADO": return Empleado.COLUMNA;
-            case "PRODUCTO": return Producto.COLUMNA;
-            case "CLIENTE":  return Cliente.COLUMNA;
-            case "RUTA": return Ruta.COLUMNA;
-            default:         return "PEPITO14";
-        }
+    private String Obtener_columna(String tipo) {
+        if(tipo.equals("EMPLEADO")){
+            return Empleado.COLUMNA;
+        }else if(tipo.equals("RUTA")){
+            return Ruta.COLUMNA;
+        }else if(tipo.equals("PRODUCTO")){
+            return Producto.COLUMNA;
+        }else if(tipo.equals("CLIENTE")){
+            return Cliente.COLUMNA;
+        }else{return "";}
     }
 
-    private int Obtener_indice(Padre valor,String tipo){
-        String indice =  "";
+    private int Obtener_indice(Padre valor, String tipo) {
+        String indice = "";
         switch (tipo) {
-            case "EMPLEADO": indice = ((Empleado) valor).getIndice(); break;
-            case "PRODUCTO": indice =  ((Producto) valor).getIndice(); break;
-            case "CLIENTE":  indice =  ((Cliente) valor).getIndice(); break;
-            case "RUTA": indice = ((Ruta) valor).getIndice(); break;
-            default: indice = "0"; break;
+            case "EMPLEADO":
+                indice = ((Empleado) valor).getIndice();
+                break;
+            case "PRODUCTO":
+                indice = ((Producto) valor).getIndice();
+                break;
+            case "CLIENTE":
+                indice = ((Cliente) valor).getIndice();
+                break;
+            case "RUTA":
+                indice = ((Ruta) valor).getIndice();
+                break;
+            default:
+                indice = "0";
+                break;
         }
-                        
+
         return Integer.parseInt(indice);
-        
+
     }
-    
-    private String [] getRegistro(Padre valor,String tipo){
+
+    private String[] getRegistro(Padre valor, String tipo) {
 
         switch (tipo) {
-            case "EMPLEADO": return ((Empleado) valor).getRegistro();
-            case "PRODUCTO": return ((Producto) valor).getRegistro(); 
-            case "CLIENTE":  return ((Cliente) valor).getRegistro();
-            default: return new String[]{""};
-        } 
-    }
-    
-    private String [] getActualizar(Padre valor,String tipo){
-
-        switch (tipo) {
-            case "EMPLEADO": return ((Empleado) valor).getActualizar();
-            case "PRODUCTO": return ((Producto) valor).getActualizar();
-            case "CLIENTE":  return ((Cliente) valor).getActualizar();
-            default: return new String[]{""};
-        } 
-    }
-    
-    private String Obtener_columna_antes_indice(String tipo){
-        switch (tipo) {
-            case "EMPLEADO": return Empleado.COLUMNA_SIN_INDICE;
-            case "PRODUCTO": return Producto.COLUMNA_SIN_INDICE;
-            case "CLIENTE":  return Cliente.COLUMNA_SIN_INDICE;
-            case "RUTA": return Ruta.COLUMNA_SIN_INDICE;
-            default:         return "PEPITO14";
+            case "EMPLEADO":
+                return ((Empleado) valor).getRegistro();
+            case "PRODUCTO":
+                return ((Producto) valor).getRegistro();
+            case "CLIENTE":
+                return ((Cliente) valor).getRegistro();
+            default:
+                return new String[]{""};
         }
     }
-    
-    private String Obtener_rango(Padre valor ,String tipo){
-        String indice = String.valueOf(Obtener_indice(valor, tipo));
-        return "!A"+indice+":"+Obtener_columna_antes_indice(tipo)+indice;
-    }
-    
-    private int Obtener_id_hoja(String tipo){
+
+    private String[] getActualizar(Padre valor, String tipo) {
+
         switch (tipo) {
-            case "EMPLEADO": return Empleado.ID_HOJA;
-            case "PRODUCTO": return Producto.ID_HOJA;
-            case "CLIENTE":  return Cliente.ID_HOJA;
-            default:         return 0;
+            case "EMPLEADO":
+                return ((Empleado) valor).getActualizar();
+            case "PRODUCTO":
+                return ((Producto) valor).getActualizar();
+            case "CLIENTE":
+                return ((Cliente) valor).getActualizar();
+            default:
+                return new String[]{""};
+        }
+    }
+
+    private String Obtener_columna_antes_indice(String tipo) {
+        switch (tipo) {
+            case "EMPLEADO":
+                return Empleado.COLUMNA_SIN_INDICE;
+            case "PRODUCTO":
+                return Producto.COLUMNA_SIN_INDICE;
+            case "CLIENTE":
+                return Cliente.COLUMNA_SIN_INDICE;
+            case "RUTA":
+                return Ruta.COLUMNA_SIN_INDICE;
+            default:
+                return "PEPITO14";
+        }
+    }
+
+    private String Obtener_rango(Padre valor, String tipo) {
+        String indice = String.valueOf(Obtener_indice(valor, tipo));
+        return "!A" + indice + ":" + Obtener_columna_antes_indice(tipo) + indice;
+    }
+
+    private int Obtener_id_hoja(String tipo) {
+        switch (tipo) {
+            case "EMPLEADO":
+                return Empleado.ID_HOJA;
+            case "PRODUCTO":
+                return Producto.ID_HOJA;
+            case "CLIENTE":
+                return Cliente.ID_HOJA;
+            default:
+                return 0;
         }
     }
 
